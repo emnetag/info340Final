@@ -1,0 +1,35 @@
+import csv
+
+import psycopg2
+
+from psycopg2.extras import DictCursor
+
+import codecs
+
+import time
+from datetime import datetime, timedelta
+from email.utils import parsedate_tz
+
+
+def to_datetime(dateString):
+    time_tuple = parsedate_tz(dateString.strip())
+    dt = datetime(*time_tuple[:6])
+    return dt
+
+csvfile = open('census_data_2008_2012.csv')
+
+datareader = csv.DictReader(csvfile, delimiter=',')
+
+conn.psycopg2.connect("dbname=emnetg user=emnetg password=gambino")
+
+cur = conn.cursor()
+
+
+
+
+
+
+
+conn.commit()
+cur.close()
+conn.close()
