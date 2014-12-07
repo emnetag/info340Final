@@ -2,9 +2,9 @@ import psycopg2
 
 import requests
 
-import codecs
-
 from datetime import datetime
+
+import simplejson
 
 from psycopg2.extensions import adapt, register_adapter, AsIs
 
@@ -26,16 +26,20 @@ def adapt_point(point):
 
 register_adapter(Point, adapt_point)
 
+class Polygon:
+    def __init__(self):
+        self.vertices = []
+    def add_point(self, point):
+        self.vertices.append(point)
+
 conn = psycopg2.connect("dbname='emnetg' user='emnetg' password='gambino'")
 
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
 query = ("https://data.cityofchicago.org/resource/ijzp-q8t2.json?"
-         "$where=year%20>=%202008%20AND%20year%20<=%202012")
+         "$where=year%20>=%202008")
 
 raw_data = requests.get(query).json()
-
-f = codecs.open('CommAreas.json', encoding='utf-8', mode='r')
 
 def insertcrime(crime):
     date = to_datetime(crime['date']).isoformat()
@@ -54,13 +58,6 @@ def insertcrime(crime):
             cur.execute("INSERT INTO final_test (crime_id, case_number, arrest, domestic, community_area, block, description, year, date, fbi_code, location, location_desc, ward) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (crime['id'], crime['case_number'], crime['arrest'], crime['domestic'], crime['community_area'], crime['block'], crime['description'], crime['year'], date, crime['fbi_code'], Point(latitude, longitude), crime['location_description'], crime['ward']))
         except psycopg2.Error, e:
             print e.pgerror
-    else:
-
-        try:
-            cur.execute("INSERT INTO crimes (crime_id, case_number, arrest, domestic, community_area, block, year, date, fbi_code, crime_type_id, location_desc, ward_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                (crime['id'], crime['case_number'], crime['arrest'], crime['domestic'], crime['community_area'],
-                crime['block'], crime['year'], crime['date'], crime['fbi_code'], crime['iucr'], crime['location_desc'],
-                ward_id))
 
         print "Inserted crime id: %s" % crime['id']
 
