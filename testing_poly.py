@@ -3,6 +3,7 @@ import simplejson
 import codecs
 
 import psycopg2
+from psycopg2.extras import DictCursor
 from psycopg2.extensions import adapt, register_adapter, AsIs
 
 import time
@@ -15,23 +16,30 @@ def to_datetime(dateString):
     dt = datetime(*time_tuple[:6])
     return dt
 
-class Point(object):
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
+conn = psycopg2.connect("dbname='dnayfeh' user='emnetg' password='gambino'")
 
-def adapt_point(point):
-    return AsIs("'(%s, %s)'" % (adapt(point.x), adapt(point.y)))
+cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-register_adapter(Point, adapt_point)
+raw_data = codecs.open('CommAreas.json', encoding='utf-8', mode='r')
 
-class Polygon:
-    def __init__(self):
-        self.vertices = [ ]
-    def add_point(self, point):
-        self.vertices.append(point)
+def insert_community(properties, boundary):
+    area_id = properties['AREA_NUMBER']
+    area_name = properties['COMMUNITY']
+	    
+    try:
+        cur.execute("INSERT INTO community_area (id, name, boundaries) VALUES (%s, %s, ST_GeomFromGeoJSON(%s))", (area_id, area_name, simplejson.dumps(boundary)))
+    except psycopg2.Error, e:
+	print e.pgerror
 
-raw_data = codecs.open('CommAreas.json', mode='r')
+try:
+    cur.execute("SELECT AddGeometryColumn ( 'community_area', 'boundaries', 0, 'GEOMETRY', 2);")
+except psycopg2.Error, e:
+    print e.pgerror
 
 for line in raw_data:
-    area = simplejson.loads(line)
+    community_area = simplejson.loads(line) 
+    insert_community(community_area['properties'], community_area['geometry'])
+
+conn.commit()
+cur.close()
+conn.close()

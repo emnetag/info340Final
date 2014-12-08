@@ -6,6 +6,7 @@ from datetime import datetime
 
 import simplejson
 
+from psycopg2.extras import DictCursor
 from psycopg2.extensions import adapt, register_adapter, AsIs
 
 
@@ -14,52 +15,67 @@ def to_datetime(dateString):
     return dt
 
 
-class Point(object):
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-
-def adapt_point(point):
-    return AsIs("'(%s, %s)'" % (adapt(point.x), adapt(point.y)))
-
-
-register_adapter(Point, adapt_point)
-
-class Polygon:
-    def __init__(self):
-        self.vertices = []
-    def add_point(self, point):
-        self.vertices.append(point)
-
 conn = psycopg2.connect("dbname='emnetg' user='emnetg' password='gambino'")
 
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
 query = ("https://data.cityofchicago.org/resource/ijzp-q8t2.json?"
-         "$where=year%20>=%202008")
+         "$where=year%20>=%202008&$limit=50000")
 
 raw_data = requests.get(query).json()
 
 def insertcrime(crime):
     date = to_datetime(crime['date']).isoformat()
 
-    cur.execute("SELECT * FROM insert_ward(%s)", (crime['ward'], ))
-    ward_id = cur.fetchone()[0]
+    cur.execute("SELECT id FROM crime_type WHERE iucr = %s;", [crime['iucr']])
+    type_id = cur.fetchone()
 
-    cur.execute("SELECT * FROM insert_crime_type()")
-
-
-    if crime.get('location') is not None:
-        latitude = float(crime['location']['latitude'])
-        longitude = float(crime['location']['longitude'])
-
+    if type_id is None:
         try:
-            cur.execute("INSERT INTO final_test (crime_id, case_number, arrest, domestic, community_area, block, description, year, date, fbi_code, location, location_desc, ward) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (crime['id'], crime['case_number'], crime['arrest'], crime['domestic'], crime['community_area'], crime['block'], crime['description'], crime['year'], date, crime['fbi_code'], Point(latitude, longitude), crime['location_description'], crime['ward']))
+            cur.execute("INSERT INTO crime_type (iucr, primary_desc) VALUES (%s, %s)", (crime['iucr'], crime['primary_type']))
         except psycopg2.Error, e:
             print e.pgerror
 
-        print "Inserted crime id: %s" % crime['id']
+    cur.execute("SELECT id FROM crime_type WHERE iucr = %s;", [crime['iucr']])
+    type_id = cur.fetchone()[0]
+
+    beat_id = insertbeat(crime['beat'])
+    
+    geo_text = 'POINT(' + crime['location']['longitude'] + ' ' + crime['location']['latitude'] + ')'
+    print geo_text
+
+   # lat = float(crime['location']['latitude'])
+   # long = float(crime['location']['longitude'])
+
+    try:
+        cur.execute("INSERT INTO crime (crime_id, case_number, beat_id, arrest, domestic, community_area, block, year, date, fbi_code, crime_type_id, description, location, location_desc, ward) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, ST_GeomFromText(%s), %s, %s, %s)", (crime['id'], crime['case_number'], beat_id, crime['arrest'], crime['domestic'], crime['community_area'], crime['block'], crime['year'], date, crime['fbi_code'], type_id, crime['description'], geo_text, crime['location_description'], crime['ward']))
+    except psycopg2.Error, e:
+        print e.pgerror
+
+    print "Inserted crime id: %s" % crime['id']
+
+
+def insertbeat(beat_num):
+    cur.execute("SELECT id FROM beats WHERE beat_code = %s", [beat_num])
+    beat_id = cur.fetchone()
+
+    if beat_id is None:
+        cur.execute("INSERT INTO beats (beat_code) VALUES (%s)", [beat_num])
+        cur.execute("SELECT id FROM beats WHERE beat_code = %s", [beat_num])
+        beat_id = cur.fetchone()[0]
+    else:
+        beat_id = beat_id[0]	
+    return beat_id
+
+
+try:
+    cur.execute("CREATE TABLE wards (id serial PRIMARY KEY, ward_num int)")
+    cur.execute("CREATE TABLE beats (id serial PRIMARY KEY, beat_code varchar)")
+    cur.execute("CREATE TABLE crime_type (id serial PRIMARY KEY, iucr varchar, primary_desc varchar)")
+    cur.execute("CREATE TABLE crime (crime_id int PRIMARY KEY, case_number varchar, beat_id int, arrest bool, domestic bool, community_area int, block varchar, year int, date timestamp, fbi_code varchar, crime_type_id int, description varchar, location geometry(POINT, 4326), location_desc text, ward varchar)")
+    #cur.execute("ALTER TABLE communities ADD (housing_crowded numeric, households_below_poverty numeric, percent_aged_25_without_hs_diploma numeric, per_capita_income int, harship_index int)")
+except psycopg2.Error, e:
+    print e.pgerror
 
 
 for crime in raw_data:

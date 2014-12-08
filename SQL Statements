@@ -11,15 +11,16 @@
         date timestamp,
         fbi_code varchar,
         crime_type_id int FOREIGN KEY references crime_type(iucr),
+        description text,
         location point,
         location_desc text,
         ward_id int FOREIGN KEY references wards(id)
     )
 
     CREATE TABLE crime_type (
-        iucr int PRIMARY KEY,
+        id int SERIAL PRIMARY KEY,
+        iucr int,
         primary_description varchar,
-        secondary_description varchar
     )
 
     CREATE TABLE wards (
@@ -43,3 +44,6 @@
         boundary polygon
     )
 
+    CREATE TABLE community_info (
+        id int PRIMARY KEY,
+        h
