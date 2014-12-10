@@ -1,4 +1,5 @@
 import psycopg2
+import ppygis
 
 import requests
 
@@ -15,7 +16,7 @@ def to_datetime(dateString):
     return dt
 
 
-conn = psycopg2.connect("dbname='emnetg' user='emnetg' password='gambino'")
+conn = psycopg2.connect("dbname='dnayfeh' user='emnetg' password='gambino'")
 
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
@@ -41,14 +42,17 @@ def insertcrime(crime):
 
     beat_id = insertbeat(crime['beat'])
     
-    geo_text = 'POINT(' + crime['location']['longitude'] + ' ' + crime['location']['latitude'] + ')'
-    print geo_text
+    #geo_text = 'POINT(' + crime['location']['longitude'] + ' ' + crime['location']['latitude'] + ')'
+    #print geo_text
 
-   # lat = float(crime['location']['latitude'])
-   # long = float(crime['location']['longitude'])
+    lat = float(crime['location']['latitude'])
+    long = float(crime['location']['longitude'])
+    
+    point = ppygis.Point(long, lat)
+    point.srid = 4326    
 
     try:
-        cur.execute("INSERT INTO crime (crime_id, case_number, beat_id, arrest, domestic, community_area, block, year, date, fbi_code, crime_type_id, description, location, location_desc, ward) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, ST_GeomFromText(%s), %s, %s, %s)", (crime['id'], crime['case_number'], beat_id, crime['arrest'], crime['domestic'], crime['community_area'], crime['block'], crime['year'], date, crime['fbi_code'], type_id, crime['description'], geo_text, crime['location_description'], crime['ward']))
+        cur.execute("INSERT INTO crime (crime_id, case_number, beat_id, arrest, domestic, community_area, block, year, date, fbi_code, crime_type_id, description, location, location_desc, ward) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (crime['id'], crime['case_number'], beat_id, crime['arrest'], crime['domestic'], crime['community_area'], crime['block'], crime['year'], date, crime['fbi_code'], type_id, crime['description'], point, crime.get('location_description'), crime['ward']))
     except psycopg2.Error, e:
         print e.pgerror
 
@@ -79,7 +83,8 @@ except psycopg2.Error, e:
 
 
 for crime in raw_data:
-    insertcrime(crime)
+    if crime.get('location') is not None:
+        insertcrime(crime)
 
 conn.commit()
 cur.close()

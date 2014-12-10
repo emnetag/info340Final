@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chicago Neighborhoods</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  </head>
+
+  <body>
+  	<div class="container">
+  		<div class="page-header">
+  			<h1>Chicago Community Areas</h1>
+  			<p class="lead">Census Data - Selected socioeconomic indicators in Chicago, 2008 - 20012</p>
+  		</div>	
+	
+		<form id="search_form" action="/" method="post" role="form">
+			<div class="form-group">
+				<input type="text" namme="comm_area" id="comm_area" class="form-control" placeholder="Search for crimes in an area...">
+			</div>
+		</form>
+
+
+		<table class="table">s
+			<thead>
+			<tr>
+				<th>Area</th>
+				<th>Percent of Housing Crowded</th>
+				<th>Households Below Poverty</th>
+				<th>Per Capita Income</th>
+			</tr>
+			</thead>
+			<tbody>
+			{% for community in communities %}
+				<tr>
+					<td><a href="communities/{{community.id}}">{{community.area}}</a></td>
+					<td>{{community.crowded}}</td>
+					<td>{{community.poverty}}</td>
+					<td>{{community.per_capita}}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+
+		</table>
+
+	    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	    <!-- Include all compiled plugins (below), or include individual files as needed -->
+	    <script src="js/bootstrap.min.js"></script>
+	</div>
+  </body>
+</html>
