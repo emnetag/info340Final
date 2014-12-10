@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Community: {{area_info.name}}</title>
+    <title>{{area_info.name}}</title>
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 
@@ -27,10 +27,10 @@
         <h2>Crimes in {{area_info.name}}</h2>
         <div class="col-md-6">
           <ul class="list-group">
-          {% crime_type in crime_types}
+          {% for crime_type in crime_types %}
             <li class="list-group-item">
               <p>{{crime_type.type}}</p>
-              <div class="wel-sm">{{crime_type.count}}</div>
+              <div class="well-sm">{{crime_type.count}}</div>
             </li>
           {% endfor %}
           </ul>
@@ -41,21 +41,17 @@
           <table class="table">
             <thead>
                 <tr>
-                    <th>Area</th>
                     <th>Percent of Housing Crowded</th>
                     <th>Households Below Poverty</th>
                     <th>Per Capita Income</th>
                 </tr>
             </thead>
             <tbody>
-            {% for x in area_info %}
                 <tr>
-                  <td><a href="communites/{{community.id}}">{{x.name}}</a></td>
-                  <td>{{x.crowded}}</td>
-                  <td>{{x.poverty}}</td>
-                  <td>{{x.per_capita}}</td>
+                  <td>{{area_info.crowded}}</td>
+                  <td>{{area_info.poverty}}</td>
+                  <td>{{area_info.per_capita}}</td>
                 </tr>
-           {% endfor %}
             </tbody>
           </table>
 

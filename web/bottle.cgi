@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # import bottle web framework
-from bottle import route, request, run, template, debug, jinja2_view
+from bottle import route, run, template, debug, jinja2_view
 # used to set default template folder
 import functools
 
@@ -33,7 +33,7 @@ debug(True)
 def home():
     # Select all of the works from our databse
     cur.execute(""" 
-        SELECT ca.name AS area, ca.id as id, info.housing_crowded AS crowded, info.households_below_poverty AS poverty, 
+        SELECT ca.name AS area, ca.id AS id, info.housing_crowded AS crowded, info.households_below_poverty AS poverty, 
         info.per_capita_income AS per_capita 
         FROM community_area_info info JOIN community_area ca ON ca.id = info.community_area_id
         """
@@ -54,37 +54,14 @@ def home():
 def community(areaid=None):
     if areaid:
         #Get census stats for the area
-        cur.execute(""" 
-             SELECT ca.name AS name, info.housing_crowded AS crowded, info.households_below_poverty AS poverty,
-             info.per_capita_income AS per_capita FROM community_area_info, community_area ca 
-             WHERE ca.id = %s; 
- 	         """
-         ,(areaid,))
+        cur.execute("SELECT ca.name AS name, info.housing_crowded AS crowded, info.households_below_poverty AS poverty, info.per_capita_income AS per_capita FROM community_area_info info JOIN community_area ca on info.community_area_id = ca.id WHERE ca.id = %s;", (areaid,))
+        area_info = cur.fetchone()
 
-        area_info = cur.fetchall()
-
-        cur.execute(""" 
-            SELECT LOWER(ct.primary_desc) AS type, count(c.id) AS count FROM crime_type ct
-            JOIN crimes c ON c.crime_type_id = ct.id
-            GROUP BY ct.id
-            WHERE c.community_area = %s
-            LIMIT 5;
-            """
-            ,(areaid))
+        cur.execute("SELECT LOWER(ct.primary_desc) AS type, count(c.crime_id) AS count FROM crime c JOIN crime_type ct ON ct.id = c.crime_type_id WHERE c.community_area = %s GROUP BY type ORDER BY count DESC LIMIT 5;", (areaid,))
         crime_types = cur.fetchall()
 
-        return {'area_info':census_info, 'crime_types':crime_type}
-
-        # # Select all of the charaters from from the title
-        # cur.execute("SELECT c.charid, c.charname, c.description FROM character c, character_work cw where workid=%s AND cw.charid = c.charid", (workid,))
-        # chars = cur.fetchall()
-        # # Get information about the work
-        # cur.execute("SELECT workid, longtitle, year, totalwords, notes FROM work where workid = %s", (workid,))
-        # work = cur.fetchone()
-        # # Render the template with all of the variables
-        # return {'characters':chars, 'work':work}
+        return {'area_info':area_info, 'crime_types':crime_types}
     else:
-        # We didn't get a workid
         home()
 
 
