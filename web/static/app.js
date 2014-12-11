@@ -3,19 +3,28 @@
 $(document).ready(function() {
 
     var polygon = $('#my-data').data('bound');
-    console.log(polygon.type);
+    console.log(polygon);
+
+    var map;
 
     function createMap(center, zoom) {
 
         var mapElem = document.getElementById('map');
 
-        var map = new google.maps.Map(mapElem, {
+        map = new google.maps.Map(mapElem, {
             center: center,
             zoom: zoom
         });
 
         $(window).resize(function() {
             $('#map').css('height', $(window).height - $('#map').position().top - 20);
+        });
+
+        map.data.addGeoJson(polygon);
+
+        map.data.setStyle({
+            fillColor: 'green',
+            strokeWeight: 1
         });
     }
 
@@ -24,6 +33,11 @@ $(document).ready(function() {
         lng: -87.6
     };
 
-    createMap(areaCoords, 12);
+    function loadGeoJsonString(geoString) {
+        var geojson = JSON.parse(geoString);
+        map.data.addGeoJson(geojson);
+    }
+
+    createMap(areaCoords, 9);
 
 });

@@ -60,10 +60,10 @@ def community(areaid=None):
         cur.execute("SELECT ca.name AS name, info.housing_crowded AS crowded, info.households_below_poverty AS poverty, info.per_capita_income AS per_capita FROM community_area_info info JOIN community_area ca on info.community_area_id = ca.id WHERE ca.id = %s;", (areaid,))
         area_info = cur.fetchone()
 
-        cur.execute("SELECT LOWER(ct.primary_desc) AS type, count(c.crime_id) AS count FROM crime c JOIN crime_type ct ON ct.id = c.crime_type_id WHERE c.community_area = %s GROUP BY type ORDER BY count DESC LIMIT 5;", (areaid,))
+        cur.execute("SELECT LOWER(ct.primary_desc) AS type, count(c.crime_id) FROM crime c JOIN crime_type ct ON ct.id = c.crime_type_id WHERE c.community_area = %s GROUP BY type ORDER BY count DESC LIMIT 5;", (areaid,))
         crime_types = cur.fetchall()
 
-        cur.execute("SELECT ST_AsGeoJSON(boundaries) FROM community_area WHERE id = %s;", (areaid,))
+        cur.execute("SELECT ST_AsGeoJSON(ST_ForceCollection(boundaries)) FROM community_area WHERE id = %s;", (areaid,))
         area_bound = cur.fetchone()[0]
 
         return {'area_info':area_info, 'crime_types':crime_types, 'area_bound':area_bound}
