@@ -7,7 +7,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-      <meta id="my-data" data-bound="{{area_bound}}">
+      <meta id="my-data" data-bound={{area_bound}}>
 
     <title>{{area_info.name}}</title>
 	<!-- Latest compiled and minified CSS -->
@@ -59,18 +59,15 @@
                 </tr>
             </tbody>
           </table>
-
         </div>
-
-        <div id="map"></div>
-
       </section>
+
+    <div id="map"></div>
 
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDXO69EdVtG8FKcFCtqtjg8TaUvsi-GkxI"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
     <script src="../static/app.js"></script>
   </body>
 </html>

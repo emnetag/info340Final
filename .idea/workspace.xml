@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="de1060b3-6d61-48e5-b4c6-ed54576284d9" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sample.py" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/web/templates/title.html" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/bottle.cgi" afterPath="$PROJECT_DIR$/web/bottle.cgi" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testing_poly.py" afterPath="$PROJECT_DIR$/testing_poly.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/static/app.js" afterPath="$PROJECT_DIR$/web/static/app.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/templates/area.html" afterPath="$PROJECT_DIR$/web/templates/area.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/.idea/workspace.xml" afterPath="$PROJECT_DIR$/web/.idea/workspace.xml" />
     </list>
     <ignored path="info340Final.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -89,9 +87,10 @@
           <file leaf-file-name="sample.py" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/sample.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.0739645" vertical-offset="0" max-vertical-offset="1014">
-                  <caret line="5" column="17" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+                <state vertical-scroll-proportion="0.36982247" vertical-offset="0" max-vertical-offset="1014">
+                  <caret line="25" column="17" selection-start-line="25" selection-start-column="17" selection-end-line="25" selection-end-column="17" />
                   <folding>
+                    <element signature="e#0#15#0" expanded="true" />
                     <marker date="1418258249000" expanded="true" signature="443:506" placeholder="SELECT ST_As..community_area..." />
                     <marker date="1418258249000" expanded="true" signature="443:508" placeholder="SELECT ST_As..community_area..." />
                     <marker date="1418258249000" expanded="true" signature="443:510" placeholder="SELECT ST_As..community_area..." />
@@ -690,9 +689,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/sample.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0739645" vertical-offset="0" max-vertical-offset="1014">
-          <caret line="5" column="17" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+        <state vertical-scroll-proportion="0.36982247" vertical-offset="0" max-vertical-offset="1014">
+          <caret line="25" column="17" selection-start-line="25" selection-start-column="17" selection-end-line="25" selection-end-column="17" />
           <folding>
+            <element signature="e#0#15#0" expanded="true" />
             <marker date="1418258249000" expanded="true" signature="443:506" placeholder="SELECT ST_As..community_area..." />
             <marker date="1418258249000" expanded="true" signature="443:508" placeholder="SELECT ST_As..community_area..." />
             <marker date="1418258249000" expanded="true" signature="443:510" placeholder="SELECT ST_As..community_area..." />
