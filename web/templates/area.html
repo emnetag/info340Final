@@ -2,8 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+      <meta id="my-data" data-bound="{{area_bound}}">
+
     <title>{{area_info.name}}</title>
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
@@ -12,7 +17,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
 
 	<!-- Latest compiled and minified JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
   </head>
 
   <body>
@@ -24,9 +29,9 @@
       </section>
 
       <section class="row">
-        <h2>Crimes in {{area_info.name}}</h2>
         <div class="col-md-6">
-          <ul class="list-group">
+            <h2>Crimes in {{area_info.name}}</h2>
+            <ul class="list-group">
           {% for crime_type in crime_types %}
             <li class="list-group-item">
               <p>{{crime_type.type}}</p>
@@ -56,11 +61,16 @@
           </table>
 
         </div>
+
+        <div id="map"></div>
+
       </section>
 
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDXO69EdVtG8FKcFCtqtjg8TaUvsi-GkxI"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="../static/app.js"></script>
   </body>
 </html>
