@@ -1,11 +1,14 @@
 #!/usr/bin/python
-# import bottle web framework
+import bottle
 from bottle import route, run, template, debug, jinja2_view
 # used to set default template folder
 import functools
 
 # import the postgres module
 import psycopg2
+
+# import simplejson
+import simplejson
 
 # import goodies to make SELECT statments eaiser
 # Returns values from a SELECT as a dictionary. Yay!
@@ -50,7 +53,7 @@ def home():
 # URL format is work/<workid>
 @route('/communities/<areaid>')
 # set template file for this route (templates/title.html)
-@view('title.html')
+@view('area.html')
 def community(areaid=None):
     if areaid:
         #Get census stats for the area
@@ -60,9 +63,15 @@ def community(areaid=None):
         cur.execute("SELECT LOWER(ct.primary_desc) AS type, count(c.crime_id) AS count FROM crime c JOIN crime_type ct ON ct.id = c.crime_type_id WHERE c.community_area = %s GROUP BY type ORDER BY count DESC LIMIT 5;", (areaid,))
         crime_types = cur.fetchall()
 
-        return {'area_info':area_info, 'crime_types':crime_types}
+        cur.execute("SELECT ST_AsGeoJSON(boundaries) FROM community_area WHERE id = %s;", (areaid,))
+        area_bound = cur.fetchone()[0]
+
+        return {'area_info':area_info, 'crime_types':crime_types, 'area_bound':area_bound}
     else:
         home()
 
+#@route('/static/<filename>', name='static')
+#def server_static(filename):
+#    return static_file(filename, root='static')
 
 run(server='cgi')

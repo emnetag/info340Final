@@ -1,4 +1,5 @@
 import simplejson
+import ppygis
 
 import codecs
 
@@ -25,14 +26,14 @@ raw_data = codecs.open('CommAreas.json', encoding='utf-8', mode='r')
 def insert_community(properties, boundary):
     area_id = properties['AREA_NUMBER']
     area_name = properties['COMMUNITY']
-	    
+
     try:
-        cur.execute("INSERT INTO community_area (id, name, boundaries) VALUES (%s, %s, ST_GeomFromGeoJSON(%s))", (area_id, area_name, simplejson.dumps(boundary)))
+        cur.execute("INSERT INTO community_area (id, name, boundaries) VALUES (%s, %s, ST_GeomFromGeoJSON(%s));", (area_id, area_name, simplejson.dumps(boundary)))
     except psycopg2.Error, e:
-	print e.pgerror
+        print e.pgerror
 
 try:
-    cur.execute("SELECT AddGeometryColumn ( 'community_area', 'boundaries', 0, 'GEOMETRY', 2);")
+    cur.execute("SELECT AddGeometryColumn ( 'community_area', 'boundaries', 0, 'POLYGON', 2);")
 except psycopg2.Error, e:
     print e.pgerror
 
