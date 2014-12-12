@@ -63,7 +63,13 @@ def community(areaid=None):
         cur.execute("SELECT LOWER(ct.primary_desc) AS type, count(c.crime_id) FROM crime c JOIN crime_type ct ON ct.id = c.crime_type_id WHERE c.community_area = %s GROUP BY type ORDER BY count DESC LIMIT 5;", (areaid,))
         crime_types = cur.fetchall()
 
-        cur.execute("SELECT ST_AsGeoJSON(ST_ForceCollection(boundaries)) FROM community_area WHERE id = %s;", (areaid,))
+        cur.execute("""SELECT row_to_json(fc) FROM ( SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) AS features
+            FROM ( SELECT 'Feature' AS type
+                , ST_AsGeoJSON(lg.boundaries)::json AS geometry
+                , row_to_json((SELECT one FROM (SELECT id) AS one
+                  )) AS properties
+            FROM community_area AS lg WHERE lg.id = %s) AS f ) AS fc; 
+            """, (areaid,))
         area_bound = cur.fetchone()[0]
 
         return {'area_info':area_info, 'crime_types':crime_types, 'area_bound':area_bound}

@@ -28,8 +28,8 @@ for data in location['features']:
     # cur.execute("INSERT INTO community_area (id, name) VALUES (%s, %s)", (data['properties']['area_id'], data['properties']['community'],))
     for coordArray in data['geometry']['coordinates']:
         for coord in coordArray:
-            cur.execute("INSERT INTO community_area (id, name, boundary_x, boundary_y) VALUES (%s, %s, %s, %s)", (data['properties']['area_id'], data['properties']['community'], coord[0], coord[1]),)
-            # print data['properties']['area_id'], data['properties']['community'], coord[0], coord[1]
+            #cur.execute("INSERT INTO community_area (id, name, boundary_x, boundary_y) VALUES (%s, %s, %s, %s)", (data['properties']['area_id'], data['properties']['community'], coord[0], coord[1]),)
+            print data['properties']['area_id'], data['properties']['community'], coord[0], coord[1]
     conn.commit()
 
 

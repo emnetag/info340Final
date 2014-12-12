@@ -7,7 +7,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <meta id="my-data" data-bound={{area_bound}}>
+    <meta id="my-data" data-bound={{area_bound}} data-name={{area_info.name}}>
 
     <title>{{area_info.name}}</title>
 	<!-- Latest compiled and minified CSS -->
@@ -16,7 +16,10 @@
 	<!-- Optional theme -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
 
-	<!-- Latest compiled and minified JavaScript -->
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+
+
+      <!-- Latest compiled and minified JavaScript -->
     <style>
         html, body { height: 100%; }
     </style>
@@ -65,26 +68,14 @@
         </div>
       </section>
     </div>
-    <div class="container" style="padding: 1em; height: 100%">
+    <div class="container" style="padding: 3em; height: 50%">
         <div id="map" style="width: 100%; height: 100%"></div>
     </div>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDXO69EdVtG8FKcFCtqtjg8TaUvsi-GkxI"></script>
     <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="../static/app.js"></script>
-    <!--<script>-->
-        <!--$(document).ready(function() {-->
-            <!--var latitude = 41.8369;-->
-            <!--var longitude = -87.6847;-->
-            <!--var latlngPos = new google.maps.LatLng(latitude, longitude);-->
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script src="../static/map.js"></script>
 
-            <!--var myOptions = {-->
-                <!--zoom: 10,-->
-                <!--center: latlngPos-->
-            <!--};-->
-
-            <!--var map = new google.maps.Map(document.getElementById("map"), myOptions);-->
-        <!--});-->
-    <!--</script>-->
   </body>
 </html>
