@@ -7,7 +7,11 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<<<<<<< HEAD
     <meta id="my-data" data-bound={{area_bound}} data-name={{area_info.name}}>
+=======
+      <meta id="my-data" data-bound={{area_bound}}>
+>>>>>>> 8b2c64b6c596a0ec06c930f59678be7dfec51bd1
 
     <title>{{area_info.name}}</title>
 	<!-- Latest compiled and minified CSS -->
@@ -16,6 +20,7 @@
 	<!-- Optional theme -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
 
+<<<<<<< HEAD
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
 
 
@@ -23,6 +28,9 @@
     <style>
         html, body { height: 100%; }
     </style>
+=======
+	<!-- Latest compiled and minified JavaScript -->
+>>>>>>> 8b2c64b6c596a0ec06c930f59678be7dfec51bd1
 
   </head>
 
@@ -41,15 +49,15 @@
           {% for crime_type in crime_types %}
             <li class="list-group-item">
               <p>{{crime_type.type}}</p>
-              <p>{{crime_type.count}}</p>
+              <div class="well-sm">{{crime_type.count}}</div>
             </li>
           {% endfor %}
-            </ul>
+          </ul>
         </div>
 
+        <h2>Census Data for {{area_info.name}}</h2>
         <div class="col-md-6">
-            <h2>Census Data for {{area_info.name}}</h2>
-            <table class="table">
+          <table class="table">
             <thead>
                 <tr>
                     <th>Percent of Housing Crowded</th>
@@ -65,9 +73,27 @@
                 </tr>
             </tbody>
           </table>
+        <h2>Crime Data for {{area_info.name}}</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Crime Type</th>
+                <th>Average Number of Crimes</th>
+                <th>Total Crimes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{community.type}}</td>
+                <td>{{community.average_crimes}}</td>
+                <td>{{community.total_crime}}</td>  
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
     </div>
+
     <div class="container" style="padding: 3em; height: 50%">
         <div id="map" style="width: 100%; height: 100%"></div>
     </div>
