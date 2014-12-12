@@ -42,13 +42,14 @@ def home():
         """
     )
 
+    communities = cur.fetchall()
     cur.execute("""
         SELECT ca.name AS area, ca.id AS id, c.crime_id AS crime_number, c.description AS description, ct.primary_desc AS crime  FROM community_area ca JOIN 
         crime c ON ca.id = c.community_area JOIN crime_type ct ON ct.id = c.crime_type_id
         """)
     # Fetch them all at once
     # We will give this list to the template so it can build a table
-    communities = cur.fetchall()
+    crimes = cur.fetchall()
     # Render the template with all of the variables
     # The template expects a dictionary of values
     return {'communities':communities}
