@@ -41,14 +41,15 @@ def home():
         FROM community_area_info info JOIN community_area ca ON ca.id = info.community_area_id
         """
     )
-
     communities = cur.fetchall()
+
     cur.execute("""
         SELECT ca.name AS area, ca.id AS id, c.crime_id AS crime_number, c.description AS description, ct.primary_desc AS crime  FROM community_area ca JOIN 
         crime c ON ca.id = c.community_area JOIN crime_type ct ON ct.id = c.crime_type_id
         """)
     # Fetch them all at once
     # We will give this list to the template so it can build a table
+    # crimes = cur.fetchall()
     crimes = cur.fetchall()
     # Render the template with all of the variables
     # The template expects a dictionary of values
@@ -69,11 +70,17 @@ def community(areaid=None):
         cur.execute("SELECT LOWER(ct.primary_desc) AS type, count(c.crime_id) AS count FROM crime c JOIN crime_type ct ON ct.id = c.crime_type_id WHERE c.community_area = %s GROUP BY type ORDER BY count DESC LIMIT 5;", (areaid,))
         crime_types = cur.fetchall()
 
-        cur.execute("SELECT LOWER(c.description) AS description, count(c.crime_id) AS count FROM crime c JOIN crime_type ct ON ct.id = c.crime_type_id WHERE c.community_area = %s GROUP BY c.description ORDER BY count DESC LIMIT 5;", (areaid,))
-        crime_desc = cur.fetchall()
-
         cur.execute("SELECT ST_AsGeoJSON(boundaries) FROM community_area WHERE id = %s;", (areaid,))
         area_bound = cur.fetchone()[0]
+
+        return {'area_info':area_info, 'crime_types':crime_types, 'area_bound':area_bound}
+    else:
+        home()
+
+def crimes(areaid=None):
+    if areaid: 
+        cur.execute("SELECT LOWER(c.description) AS description, count(c.crime_id) AS count FROM crime c JOIN crime_type ct ON ct.id = c.crime_type_id WHERE c.community_area = %s GROUP BY c.description ORDER BY count DESC LIMIT 5;", (areaid,))
+        crime_desc = cur.fetchall()
 
         cur.execute("SELECT count(c.crime_id) AS total_crime FROM crime c JOIN crime_type ct ON ct.id = c.crime_type_id WHERE c.community_area = %s GROUP BY community_area;", (areaid,))
         total_crime = cur.fetchone()[0]
@@ -81,11 +88,11 @@ def community(areaid=None):
         cur.execute("SELECT AVG(count) AS average_crimes FROM (SELECT count(c.crime_id) AS count, c.year FROM crime c JOIN crime_type ct ON ct.id = c.crime_type_id WHERE c.community_area = %s GROUP by c.year ORDER BY c.year ASC) AS count;", (areaid,))
         average = cur.fetchone()[0]
 
-
-
-        return {'area_info':area_info, 'crime_types':crime_types, 'crime_desc':crime_desc, 'area_bound':area_bound, 'total_crime':total_crime, 'average':average}
+        return {'crime_desc':crime_desc, 'total_crime':total_crime, 'average':average}
     else:
         home()
+
+
 
 @route('/static/<filename>', name='static')
 def server_static(filename):
